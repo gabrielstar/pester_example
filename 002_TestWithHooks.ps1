@@ -1,13 +1,13 @@
-Function CSVToJSON($filePathCSV, $filePathJSON)
+Function Convert-CSVToJSON($FilePathCSV, $FilePathJSON)
 {
     try
     {
-        $csv = Get-Content -Path $filePathCSV -ErrorAction Stop
-        $csv = $csv | ConvertFrom-Csv | ConvertTo-Json | Out-File -Encoding UTF8 $filePathJSON
+        $csv = Get-Content -Path $FilePathCSV -ErrorAction Stop
+        $csv = $csv | ConvertFrom-Csv | ConvertTo-Json | Out-File -Encoding UTF8 $FilePathJSON
     }
     catch [System.Management.Automation.ItemNotFoundException]
     {
-        "IO Error while rading/writing file: {0},{1}" -f $filePathCSV, $filePathJSON
+        "IO Error while rading/writing file: {0},{1}" -f $FilePathCSV, $FilePathJSON
         "Terminating"
     }
     return
@@ -16,7 +16,7 @@ Function CSVToJSON($filePathCSV, $filePathJSON)
 Describe 'File conversion tests' {
     Context 'when I convert existing CSV file to JSON' {
         BeforeAll {
-            CSVToJSON -filePathCSV "$PSScriptRoot/TestData/data.csv" `
+            Convert-CSVToJSON -filePathCSV "$PSScriptRoot/TestData/data.csv" `
                         -filePathJSON "$PSScriptRoot/TestData/data.json"
         }
         AfterAll {
@@ -28,12 +28,12 @@ Describe 'File conversion tests' {
 
         it 'should JSON file be expected file' {
             $actual = Get-Content  -Path "$PSScriptRoot/TestData/data.json"
-            $expected = Get-Content  -Path "$PSScriptRoot/TestData/data.json"
+            $expected = Get-Content  -Path "$PSScriptRoot/TestData/data_expected.json"
             $expected | Should -Be $actual
         }
         it 'should not throw exception' {
             {
-                CSVToJSON -filePathCSV "$PSScriptRoot/TestData/data.csv" `
+                Convert-CSVToJSON -filePathCSV "$PSScriptRoot/TestData/data.csv" `
                         -filePathJSON "$PSScriptRoot/TestData/data.json"
             } | Should -Not -Throw
         }

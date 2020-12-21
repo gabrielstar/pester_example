@@ -1,4 +1,4 @@
-function Convert-CSVToJSON($FilePathCSV, $FilePathJSON)
+Function Convert-CSVToJSON($FilePathCSV, $FilePathJSON)
 {
     try
     {
@@ -16,22 +16,25 @@ function Convert-CSVToJSON($FilePathCSV, $FilePathJSON)
 Describe 'File conversion tests' {
     Context 'when I convert existing CSV file to JSON' {
         BeforeAll {
+            $testFilePath="$TestDrive/data.json"
             Convert-CSVToJSON -filePathCSV "$PSScriptRoot/TestData/data.csv" `
-                        -filePathJSON "$PSScriptRoot/TestData/data.json"
+                        -filePathJSON "$testFilePath"
+        }
+        AfterAll {
+            Remove-Item -Path "$testFilePath"
         }
         it 'should JSON file exist' {
-            "$PSScriptRoot/TestData/data.json" | Should -Exist
+            "$testFilePath" | Should -Exist
         }
-
         it 'should JSON file be expected file' {
-            $actual = Get-Content  -Path "$PSScriptRoot/TestData/data.json"
+            $actual = Get-Content  -Path "$testFilePath"
             $expected = Get-Content  -Path "$PSScriptRoot/TestData/data_expected.json"
             $expected | Should -Be $actual
         }
-        it 'should not throw exception' {
+        it 'should not throw exception' -Tag E2E{
             {
                 Convert-CSVToJSON -filePathCSV "$PSScriptRoot/TestData/data.csv" `
-                        -filePathJSON "$PSScriptRoot/TestData/data.json"
+                        -filePathJSON "$testFilePath"
             } | Should -Not -Throw
         }
     }

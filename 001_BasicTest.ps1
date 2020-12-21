@@ -1,17 +1,19 @@
+function foo(){
+    return "foo"
+}
 Describe 'My tests' {
-    Context 'when it is 1' {
-        it 'should return this thing' {
-
+    Context 'When run default context' {
+        it 'should 1 be 1' {
+            1 | Should -Be 1
         }
-
-        it 'should not return that thing' {
-
+        it 'should Text match pattern' {
+            "Text" | Should -Match "Tex*"
         }
-        it 'should call this method' {
-
+        it 'should array have a 2 element' {
+            @(1,2,3) | Should -Contain 2
         }
-        it 'should create this file' {
-
+        it 'should return foo' {
+            foo | Should -be "foo"
         }
     }
 }
