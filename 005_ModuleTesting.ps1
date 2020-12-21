@@ -15,7 +15,7 @@ Describe  "Exported functions tests" {
 
 
 InModuleScope 005_ModuleTesting {
-    Describe  "Module internal functions tests" {
+    Describe  "Module internal functions tests" -Tag ModuleTests{
         Context "When I run B" {
             It "should return correct content" {
                 B | Should -be "I am B"

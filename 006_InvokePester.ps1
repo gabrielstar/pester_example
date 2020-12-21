@@ -1,5 +1,5 @@
 Invoke-Pester `
-    -ExcludeTagFilter E2E `
+    -ExcludeTagFilter ModuleTests `
     -Script "$PSScriptRoot\005_ModuleTesting.ps1" `
     -OutputFile $PSScriptRoot\Results\pesterTEST.xml `
     -OutputFormat 'NUnitXML' `
