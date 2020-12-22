@@ -1,0 +1,40 @@
+name: $(BuildID)
+trigger: none
+
+jobs:
+  - job: pester_tests
+    displayName: Pester tests
+    timeoutInMinutes: 5
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - powershell: |
+          New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\Results
+          New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\Coverage
+        displayName: Prepare
+
+      - task: PowerShell@2
+        displayName: Run Pester tests with Coverage
+        inputs:
+          filePath: '$(System.DefaultWorkingDirectory)\006_InvokePester.ps1'
+          pwsh: true
+
+      - task: PublishTestResults@2
+        displayName: Publish Pester tests
+        inputs:
+          testResultsFormat: 'NUnit'
+          testResultsFiles: '$(System.DefaultWorkingDirectory)/Results/*pesterTEST.xml'
+          failTaskOnFailedTests: true
+
+      - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'
+        displayName: 'Install ReportGenerator tool'
+
+      - script: 'reportgenerator -reports:"$(System.DefaultWorkingDirectory)/Results/*pesterCoverageTEST.xml" -targetdir:"$(System.DefaultWorkingDirectory)/Results/" -reporttypes:HtmlInline_AzurePipelines'
+        displayName: 'Create reports'
+
+      - task: PublishCodeCoverageResults@1
+        displayName: Publish Pester Code Coverage
+        inputs:
+          codeCoverageTool: 'JaCoCo'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/Results/*pesterCoverageTEST.xml'
+          reportDirectory: "$(System.DefaultWorkingDirectory)/Results/"
