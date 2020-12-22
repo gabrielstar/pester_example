@@ -21,3 +21,4 @@ This is not so good:
         displayName: Prepare Tests Directories
 
 * If something can be generalized, consider writing a Task 
+* Have a look at real life example: https://github.com/ObjectivityLtd/crux/tree/release/0.7.0/azure/steps/jmeter_docker
