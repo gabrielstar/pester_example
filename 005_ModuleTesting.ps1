@@ -6,9 +6,9 @@ Describe  "Exported functions tests" {
             A | Should -be "I am A and I am B"
         }
     }
-    Context "When I run B" -Skip {
+    Context "When I run B"  -Skip {
         It "should fail since B is not exported" {
-            B | Should -be "I am B"
+            B | Should -be "I am B ."
         }
     }
 }
