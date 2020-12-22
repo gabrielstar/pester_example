@@ -6,7 +6,7 @@ Describe  "Exported functions tests" {
             A | Should -be "I am A and I am B"
         }
     }
-    Context "When I run B" -Skip{
+    Context "When I run B" -Skip {
         It "should fail since B is not exported" {
             B | Should -be "I am B"
         }
@@ -14,8 +14,8 @@ Describe  "Exported functions tests" {
 }
 
 
-InModuleScope 005_ModuleTesting {
-    Describe  "Module internal functions tests" -Tag ModuleTests{
+InModuleScope 005_ModuleTesting  {
+    Describe  "Module internal functions tests"  -Tag ModuleTests{
         Context "When I run B" {
             It "should return correct content" {
                 B | Should -be "I am B"
