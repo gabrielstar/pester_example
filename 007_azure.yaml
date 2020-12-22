@@ -1,5 +1,8 @@
 name: $(BuildID)
-trigger: none
+trigger:
+  branches:
+    include:
+      - master
 
 jobs:
   - job: pester_tests
@@ -9,9 +12,11 @@ jobs:
       vmImage: 'windows-latest'
     steps:
       - powershell: |
-          New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\Results
-          New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\Coverage
-        displayName: Prepare
+          $dirs=@('Results','Coverage')
+          foreach($dir in $dirs){
+            New-Item -ItemType Directory -Force -Path "$(System.DefaultWorkingDirectory)\$dir"
+          }
+        displayName: Prepare Tests Directories
 
       - task: PowerShell@2
         displayName: Run Pester tests with Coverage
@@ -20,20 +25,20 @@ jobs:
           pwsh: true
 
       - task: PublishTestResults@2
-        displayName: Publish Pester tests
+        displayName: Publish Pester Tests Results
         inputs:
           testResultsFormat: 'NUnit'
           testResultsFiles: '$(System.DefaultWorkingDirectory)/Results/*pesterTEST.xml'
           failTaskOnFailedTests: true
 
       - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'
-        displayName: 'Install ReportGenerator tool'
+        displayName: 'Install Coverage ReportGenerator tool'
 
-      - script: 'reportgenerator -reports:"$(System.DefaultWorkingDirectory)/Results/*pesterCoverageTEST.xml" -targetdir:"$(System.DefaultWorkingDirectory)/Results/" -reporttypes:HtmlInline_AzurePipelines'
-        displayName: 'Create reports'
+      - script: 'reportgenerator -reports:"$(System.DefaultWorkingDirectory)/Coverage/*pesterCoverageTEST.xml" -targetdir:"$(System.DefaultWorkingDirectory)/Results/" -reporttypes:HtmlInline_AzurePipelines'
+        displayName: 'Create Coverage reports'
 
       - task: PublishCodeCoverageResults@1
-        displayName: Publish Pester Code Coverage
+        displayName: Publish Pester Code Coverage Report
         inputs:
           codeCoverageTool: 'JaCoCo'
           summaryFileLocation: '$(System.DefaultWorkingDirectory)/Results/*pesterCoverageTEST.xml'
