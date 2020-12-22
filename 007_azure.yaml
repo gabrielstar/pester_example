@@ -41,5 +41,5 @@ jobs:
         displayName: Publish Pester Code Coverage Report
         inputs:
           codeCoverageTool: 'JaCoCo'
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/Results/*pesterCoverageTEST.xml'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/Coverage/*pesterCoverageTEST.xml'
           reportDirectory: "$(System.DefaultWorkingDirectory)/Results/"
